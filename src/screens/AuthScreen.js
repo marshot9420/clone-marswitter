@@ -9,6 +9,7 @@ const AuthScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [newAccount, setNewAccount] = useState(true);
+  const [error, setError] = useState("");
 
   const onChange = (event) => {
     const {
@@ -33,12 +34,15 @@ const AuthScreen = () => {
       }
       console.log(data);
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   };
 
+  const toggleAccount = () => setNewAccount((prev) => !prev);
+
   return (
     <>
+      {error}
       <form onSubmit={onSubmit}>
         <input
           name="email"
@@ -58,6 +62,7 @@ const AuthScreen = () => {
         />
         <input type="submit" value={newAccount ? "회원가입" : "로그인"} />
       </form>
+      <span onClick={toggleAccount}>{newAccount ? "로그인" : "회원가입"}</span>
       <div>
         <button>구글로 로그인</button>
         <button>깃허브로 로그인</button>
