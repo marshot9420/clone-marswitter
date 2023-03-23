@@ -1,35 +1,38 @@
-import { addDoc, collection, doc, getDocs, query } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { dbService } from "../fbase";
 
-const HomeScreen = () => {
+const HomeScreen = ({ userObj }) => {
   const [marswit, setMarswit] = useState("");
   const [marswits, setMarswits] = useState([]);
 
-  const getMarswits = async () => {
-    const querySnapshot = await getDocs(
-      query(collection(dbService, "marswits"))
-    );
-    querySnapshot.forEach((doc) => {
-      const marswitObject = {
-        ...doc.data(),
-        id: doc.id,
-      };
-      setMarswits((prev) => [marswitObject, ...prev]);
-    });
-  };
-
   useEffect(() => {
-    getMarswits();
+    const q = query(
+      collection(dbService, "marswits"),
+      orderBy("createdAt", "desc")
+    );
+    onSnapshot(q, (snapshot) => {
+      const marswitArr = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setMarswits(marswitArr);
+    });
   }, []);
 
   const onSubmit = async (event) => {
     event.preventDefault();
     const docRef = await addDoc(collection(dbService, "marswits"), {
-      marswit,
+      text: marswit,
       createdAt: Date.now(),
+      creatorId: userObj.uid,
     });
-    console.log(docRef);
     setMarswit("");
   };
 
@@ -55,7 +58,7 @@ const HomeScreen = () => {
       <div>
         {marswits.map((marswit) => (
           <div key={marswit.id}>
-            <h4>{marswit.marswit}</h4>
+            <h4>{marswit.text}</h4>
           </div>
         ))}
       </div>
