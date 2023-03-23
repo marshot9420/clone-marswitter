@@ -1,9 +1,17 @@
+import { addDoc, collection } from "firebase/firestore";
 import React, { useState } from "react";
+import { dbService } from "../fbase";
 
 const HomeScreen = () => {
   const [marswit, setMarswit] = useState("");
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
+    const docRef = await addDoc(collection(dbService, "marswits"), {
+      marswit,
+      createdAt: Date.now(),
+    });
+    console.log(docRef);
+    setMarswit("");
   };
   const onChange = (event) => {
     const {
