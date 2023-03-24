@@ -1,6 +1,7 @@
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
 import React, { useState } from "react";
-import { dbService } from "../fbase";
+import { dbService, storageService } from "../fbase";
 
 const Marswit = ({ marswitObj, isOwner }) => {
   const [editing, setEditing] = useState(false);
@@ -10,6 +11,8 @@ const Marswit = ({ marswitObj, isOwner }) => {
     if (ok) {
       const marswitTextRef = doc(dbService, "marswits", `${marswitObj.id}`);
       await deleteDoc(marswitTextRef);
+      const urlRef = ref(storageService, marswitObj.attachmentUrl);
+      await deleteObject(urlRef);
     }
   };
 

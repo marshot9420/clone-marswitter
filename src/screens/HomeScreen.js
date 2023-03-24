@@ -33,7 +33,7 @@ const HomeScreen = ({ userObj }) => {
   const onSubmit = async (event) => {
     event.preventDefault();
     let attachmentUrl = "";
-    if (attachment != "") {
+    if (attachment !== "") {
       const attachmentRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
       const response = await uploadString(
         attachmentRef,
