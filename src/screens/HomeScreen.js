@@ -6,6 +6,7 @@ import {
   query,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
+import Marswit from "../components/Marswit";
 import { dbService } from "../fbase";
 
 const HomeScreen = ({ userObj }) => {
@@ -57,9 +58,11 @@ const HomeScreen = ({ userObj }) => {
       </form>
       <div>
         {marswits.map((marswit) => (
-          <div key={marswit.id}>
-            <h4>{marswit.text}</h4>
-          </div>
+          <Marswit
+            key={marswit.id}
+            marswitObj={marswit}
+            isOwner={marswit.creatorId === userObj.uid}
+          />
         ))}
       </div>
     </>
