@@ -12,6 +12,7 @@ import { dbService } from "../fbase";
 const HomeScreen = ({ userObj }) => {
   const [marswit, setMarswit] = useState("");
   const [marswits, setMarswits] = useState([]);
+  const [attachment, setAttachment] = useState();
 
   useEffect(() => {
     const q = query(
@@ -44,6 +45,25 @@ const HomeScreen = ({ userObj }) => {
     setMarswit(value);
   };
 
+  const onFileChange = (event) => {
+    const {
+      target: { files },
+    } = event;
+    const theFile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedEvent) => {
+      const {
+        currentTarget: { result },
+      } = finishedEvent;
+      setAttachment(result);
+    };
+    if (theFile) {
+      reader.readAsDataURL(theFile);
+    }
+  };
+
+  const onClearAttachment = () => setAttachment(null);
+
   return (
     <>
       <form onSubmit={onSubmit}>
@@ -54,7 +74,14 @@ const HomeScreen = ({ userObj }) => {
           value={marswit}
           onChange={onChange}
         />
+        <input type="file" accept="image/*" onChange={onFileChange} />
         <input type="submit" value="MarsWit" />
+        {attachment && (
+          <>
+            <img src={attachment} width="50px" height="50px" />
+            <button onClick={onClearAttachment}>취소</button>
+          </>
+        )}
       </form>
       <div>
         {marswits.map((marswit) => (

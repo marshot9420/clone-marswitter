@@ -24,7 +24,6 @@ const App = () => {
       ) : (
         "Initializing..."
       )}
-      <footer>&copy; MarsWitter {new Date().getFullYear()}</footer>
     </>
   );
 };
