@@ -5,9 +5,11 @@ import {
   orderBy,
   query,
 } from "firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import React, { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import Marswit from "../components/Marswit";
-import { dbService } from "../fbase";
+import { dbService, storageService } from "../fbase";
 
 const HomeScreen = ({ userObj }) => {
   const [marswit, setMarswit] = useState("");
@@ -30,12 +32,25 @@ const HomeScreen = ({ userObj }) => {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    const docRef = await addDoc(collection(dbService, "marswits"), {
+    let attachmentUrl = "";
+    if (attachment != "") {
+      const attachmentRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
+      const response = await uploadString(
+        attachmentRef,
+        attachment,
+        "data_url"
+      );
+      attachmentUrl = await getDownloadURL(response.ref);
+    }
+    const marswitObj = {
       text: marswit,
       createdAt: Date.now(),
       creatorId: userObj.uid,
-    });
+      attachmentUrl,
+    };
+    await addDoc(collection(dbService, "marswits"), marswitObj);
     setMarswit("");
+    setAttachment("");
   };
 
   const onChange = (event) => {

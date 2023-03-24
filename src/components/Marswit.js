@@ -48,6 +48,9 @@ const Marswit = ({ marswitObj, isOwner }) => {
       ) : (
         <>
           <h4>{marswitObj.text}</h4>
+          {marswitObj.attachmentUrl && (
+            <img src={marswitObj.attachmentUrl} width="50px" height="50px" />
+          )}
           {isOwner && (
             <>
               <button onClick={onDeleteClick}>MarsWit 삭제</button>
