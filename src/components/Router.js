@@ -10,17 +10,19 @@ import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import Navigation from "./Navigation";
 
-const AppRouter = ({ isLoggedIn, userObj }) => {
+const AppRouter = ({ isLoggedIn, userObj, refreshUser }) => {
   return (
     <Router>
-      {isLoggedIn && <Navigation />}
+      {isLoggedIn && <Navigation userObj={userObj} />}
       <Routes>
         {isLoggedIn ? (
           <>
             <Route path="/" element={<HomeScreen userObj={userObj} />} />
             <Route
               path="/profile"
-              element={<ProfileScreen userObj={userObj} />}
+              element={
+                <ProfileScreen userObj={userObj} refreshUser={refreshUser} />
+              }
             />
             <Route path="*" element={<Navigate to="/" replace />} />
           </>
